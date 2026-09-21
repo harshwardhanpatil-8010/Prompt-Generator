@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Context Engineer</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="logo-badge">CE</div>
+        <div>
+          <h1 class="app-title">AI Context Engineer</h1>
+          <p class="app-subtitle">Context Lifecycle & Prompt Optimizer</p>
+        </div>
+      </div>
+      <div id="backendStatus" class="status-indicator offline" title="Backend Status">
+        <span class="status-dot"></span>
+        <span id="statusText" class="status-label">Offline</span>
+      </div>
+    </header>
+
+    <!-- Stepper Navigation -->
+    <div class="step-nav">
+      <div class="step active" id="step1-tab"><span>1</span> Input</div>
+      <div class="step" id="step2-tab"><span>2</span> Context</div>
+      <div class="step" id="step3-tab"><span>3</span> Graph</div>
+      <div class="step" id="step4-tab"><span>4</span> Optimize</div>
+      <div class="step" id="step5-tab"><span>5</span> Prompt</div>
+    </div>
+
+    <!-- Alert / Notification -->
+    <div id="alertBox" class="alert-box hidden"></div>
+
+    <!-- MAIN VIEW CONTAINER -->
+    <main class="main-content">
+
+      <!-- STAGE 1: INPUT & CONTEXT CAPTURE -->
+      <section id="stage-input" class="stage-view active">
+        <div class="form-group">
+          <label for="projectName">Project Name:</label>
+          <input type="text" id="projectName" placeholder="e.g. Sneaker Store Platform" value="Sneaker Store Platform">
+        </div>
+
+        <div class="form-group">
+          <label for="inputRequirement">Website Requirement:</label>
+          <textarea id="inputRequirement" rows="4" placeholder="e.g. Create a modern e-commerce website for a sneaker store with drop countdown, size selector, and cart."></textarea>
+        </div>
+
+        <div class="context-card">
+          <label class="toggle-container">
+            <input type="checkbox" id="enableWebContext">
+            <span class="toggle-switch"></span>
+            <span class="toggle-label">Include Active Webpage Context</span>
+          </label>
+          <div id="webContextPreview" class="context-preview hidden">
+            <div class="preview-item"><strong>Title:</strong> <span id="ctxTitle">-</span></div>
+            <div class="preview-item"><strong>URL:</strong> <span id="ctxUrl">-</span></div>
+            <div class="preview-item"><strong>Selected:</strong> <span id="ctxSelection">None</span></div>
+          </div>
+        </div>
+
+        <button id="btnGenerateContext" class="btn btn-primary full-width">
+          <span class="btn-text">Generate Structured Context</span>
+          <span class="spinner hidden"></span>
+        </button>
+      </section>
+
+      <!-- STAGE 2: STRUCTURED CONTEXT & MANAGEMENT -->
+      <section id="stage-context" class="stage-view">
+        <div class="section-header">
+          <h2>Structured Context</h2>
+          <span id="projectIdBadge" class="badge">ID: -</span>
+        </div>
+
+        <!-- Context Tabs -->
+        <div class="spec-tabs">
+          <button class="spec-tab active" data-tab="tab-reqs">Reqs (<span id="reqCount">0</span>)</button>
+          <button class="spec-tab" data-tab="tab-arch">Architecture</button>
+          <button class="spec-tab" data-tab="tab-design">Design/Tech</button>
+          <button class="spec-tab" data-tab="tab-assumptions">Assumptions</button>
+          <button class="spec-tab" data-tab="tab-unknowns">Unknowns</button>
+        </div>
+
+        <div class="spec-tab-content">
+          <!-- Requirements List -->
+          <div id="tab-reqs" class="tab-pane active">
+            <div id="requirementsList" class="items-scroll-list"></div>
+          </div>
+
+          <!-- Architecture (Pages, Components, APIs, Entities) -->
+          <div id="tab-arch" class="tab-pane">
+            <div class="sub-section">
+              <h3>Pages & Routes</h3>
+              <div id="pagesList" class="compact-list"></div>
+            </div>
+            <div class="sub-section">
+              <h3>Core Components</h3>
+              <div id="componentsList" class="compact-list"></div>
+            </div>
+            <div class="sub-section">
+              <h3>APIs & Data Entities</h3>
+              <div id="apisList" class="compact-list"></div>
+            </div>
+          </div>
+
+          <!-- Design & Tech -->
+          <div id="tab-design" class="tab-pane">
+            <div class="spec-detail-box">
+              <h4>Design System Spec</h4>
+              <p><strong>Style:</strong> <span id="designStyle">-</span></p>
+              <p><strong>Color Direction:</strong> <span id="designColor">-</span></p>
+              <p><strong>Typography:</strong> <span id="designType">-</span></p>
+            </div>
+            <div class="spec-detail-box">
+              <h4>Technical Recommendations</h4>
+              <p><strong>Frontend:</strong> <span id="techFrontend">-</span></p>
+              <p><strong>Security:</strong> <span id="techSecurity">-</span></p>
+              <p><strong>Accessibility:</strong> <span id="techA11y">-</span></p>
+            </div>
+          </div>
+
+          <!-- Assumptions -->
+          <div id="tab-assumptions" class="tab-pane">
+            <div class="sub-section">
+              <h4>Explicit Assumptions (Model Generated)</h4>
+              <ul id="assumptionsList" class="bullet-list"></ul>
+            </div>
+          </div>
+
+          <!-- Unknowns -->
+          <div id="tab-unknowns" class="tab-pane">
+            <div class="sub-section">
+              <h4>Identified Unknowns</h4>
+              <ul id="unknownsList" class="bullet-list"></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-buttons-row">
+          <button id="btnBackToInput" class="btn btn-secondary">Edit Input</button>
+          <button id="btnViewGraph" class="btn btn-secondary">View Graph &rarr;</button>
+          <button id="btnApproveContext" class="btn btn-primary">
+            <span class="btn-text">Approve Context</span>
+            <span class="spinner hidden"></span>
+          </button>
+        </div>
+      </section>
+
+      <!-- STAGE 3: DEPENDENCY GRAPH & RETRIEVAL -->
+      <section id="stage-graph" class="stage-view">
+        <div class="section-header">
+          <h2>Dependency Graph & Context Retrieval</h2>
+        </div>
+
+        <div class="graph-box">
+          <div class="graph-legend">
+            <span><strong class="color-req">REQ</strong> Requirement</span>
+            <span><strong class="color-page">PAGE</strong> Page</span>
+            <span><strong class="color-comp">COMP</strong> Component</span>
+            <span><strong class="color-api">API</strong> Endpoint</span>
+          </div>
+          <div id="graphFlowView" class="graph-flow-container"></div>
+        </div>
+
+        <div class="query-retrieval-box">
+          <label for="queryItemId">Query Related Context by ID:</label>
+          <div class="query-input-row">
+            <input type="text" id="queryItemId" placeholder="e.g. REQ-001 or REQ-002" value="REQ-001">
+            <button id="btnQueryContext" class="btn btn-secondary">Retrieve</button>
+          </div>
+          <div id="queryResultsBox" class="query-results hidden"></div>
+        </div>
+
+        <div class="action-buttons-row">
+          <button id="btnBackToContext" class="btn btn-secondary">&larr; Back to Context</button>
+          <button id="btnProceedToOptimize" class="btn btn-primary">Optimize Context &rarr;</button>
+        </div>
+      </section>
+
+      <!-- STAGE 4: CONTEXT OPTIMIZATION & METRICS -->
+      <section id="stage-optimize" class="stage-view">
+        <div class="section-header">
+          <h2>Context Optimization</h2>
+          <span class="badge badge-success">Target: &ge;50% Reduction</span>
+        </div>
+
+        <!-- Metric Cards Grid -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-value text-muted" id="metricOrigTokens">0</div>
+            <div class="metric-label">Original Tokens</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value text-accent" id="metricOptTokens">0</div>
+            <div class="metric-label">Optimized Tokens</div>
+          </div>
+          <div class="metric-card highlight">
+            <div class="metric-value text-success" id="metricReduction">0%</div>
+            <div class="metric-label">Token Reduction</div>
+          </div>
+          <div class="metric-card highlight">
+            <div class="metric-value text-primary" id="metricCoverage">100%</div>
+            <div class="metric-label">Req Coverage</div>
+          </div>
+        </div>
+
+        <!-- Breakdown summary -->
+        <div class="optimization-summary-card">
+          <div class="summary-stat">
+            <span>Tokens Saved:</span>
+            <strong id="metricTokensSaved">0 tokens</strong>
+          </div>
+          <div class="summary-stat">
+            <span>Critical Reqs Preserved:</span>
+            <strong id="metricCriticalCoverage">0 / 0 (100%)</strong>
+          </div>
+          <div class="summary-stat">
+            <span>Pruned Redundancies:</span>
+            <strong id="metricPrunedCount">0 items</strong>
+          </div>
+        </div>
+
+        <!-- Pruned Items Breakdown -->
+        <div class="sub-section">
+          <h4>Pruned / Compressed Context</h4>
+          <div id="prunedItemsList" class="pruned-list-box"></div>
+        </div>
+
+        <div class="action-buttons-row">
+          <button id="btnBackToGraph" class="btn btn-secondary">&larr; Graph</button>
+          <button id="btnViewFinalPrompt" class="btn btn-primary">Generate Final Prompt &rarr;</button>
+        </div>
+      </section>
+
+      <!-- STAGE 5: FINAL MINIMUM-SUFFICIENT PROMPT -->
+      <section id="stage-prompt" class="stage-view">
+        <div class="section-header">
+          <h2>Minimum-Sufficient Prompt</h2>
+          <span class="badge badge-primary">Agent Ready</span>
+        </div>
+
+        <p class="stage-desc">Information-dense prompt ready to send to an external AI website-generation agent.</p>
+
+        <div class="prompt-container">
+          <textarea id="finalPromptText" rows="11"></textarea>
+        </div>
+
+        <div class="action-buttons-row">
+          <button id="btnCopyPrompt" class="btn btn-success full-width">
+            <span id="copyBtnIcon">&#128203;</span>
+            <span id="copyBtnText">Copy Prompt</span>
+          </button>
+          <button id="btnApprovePrompt" class="btn btn-primary full-width">
+            <span>&#10003; Approve Prompt</span>
+          </button>
+        </div>
+
+        <div class="action-buttons-row mt-sm">
+          <button id="btnRestart" class="btn btn-secondary full-width">New Project</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
