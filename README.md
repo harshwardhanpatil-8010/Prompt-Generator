@@ -217,8 +217,30 @@ API_PORT=8000
 .venv/bin/python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 - API Root: `http://127.0.0.1:8000/`
+- Web Application Studio: `http://127.0.0.1:8000/app/`
 - Health Check: `http://127.0.0.1:8000/health`
 - Interactive OpenAPI Docs: `http://127.0.0.1:8000/docs`
+
+---
+
+## Accessing the Web Application (Browser Studio)
+
+You can use the full **AI Context Engineer** website directly in any web browser without needing to install the Chrome Extension:
+
+1. Start the server:
+   ```bash
+   source .venv/bin/activate
+   python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
+   ```
+2. Open in your browser:
+   **[http://127.0.0.1:8000/app/](http://127.0.0.1:8000/app/)**
+3. Features:
+   - Full-screen 5-stage context engineering lifecycle
+   - Pre-configured starter presets (Sneaker Drops, SaaS Analytics, Telehealth, AI Canvas)
+   - Interactive structured context explorer (Requirements, Architecture, Design tokens, Assumptions, Unknowns)
+   - Visual dependency graph flow viewer and subgraph retriever
+   - Real-time token reduction and critical coverage KPI dashboard (&ge;50% reduction)
+   - Minimum-sufficient prompt studio with agent target presets (Claude, GPT-4o, Bolt.new), 1-click clipboard copy, and Markdown/JSON downloads.
 
 ---
 

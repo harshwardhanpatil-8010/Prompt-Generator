@@ -51,6 +51,7 @@ class ProjectStateMachine:
             ProjectState.ERROR,
         },
         ProjectState.APPROVED: {
+            ProjectState.APPROVED,
             ProjectState.MANAGED,
             ProjectState.OPTIMIZING,
             ProjectState.ERROR,
@@ -69,6 +70,9 @@ class ProjectStateMachine:
             ProjectState.FINAL_PROMPT_READY,
             ProjectState.REVIEW,
             ProjectState.MANAGED,
+            ProjectState.OPTIMIZING,
+            ProjectState.APPROVED,
+            ProjectState.OPTIMIZED,
             ProjectState.ERROR,
         },
         ProjectState.FINAL_PROMPT_READY: {

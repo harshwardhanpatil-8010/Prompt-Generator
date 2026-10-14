@@ -89,6 +89,14 @@ class PipelineOrchestrator:
         if not project.context_representation:
             raise ValueError("Cannot approve project without generated context.")
 
+        if project.state in [
+            ProjectState.APPROVED,
+            ProjectState.OPTIMIZING,
+            ProjectState.OPTIMIZED,
+            ProjectState.FINAL_PROMPT_READY,
+        ]:
+            return project
+
         ProjectStateMachine.transition(project, ProjectState.APPROVED)
         self.store.save_project(project)
         return project
@@ -118,14 +126,25 @@ class PipelineOrchestrator:
         if not project:
             raise ValueError(f"Project {project_id} not found.")
 
-        if project.state not in [ProjectState.APPROVED, ProjectState.MANAGED]:
+        if (
+            project.state in [ProjectState.OPTIMIZED, ProjectState.FINAL_PROMPT_READY]
+            and project.optimization_metrics
+            and project.final_prompt
+        ):
+            return project
+
+        if project.state not in [
+            ProjectState.APPROVED,
+            ProjectState.MANAGED,
+            ProjectState.OPTIMIZED,
+        ]:
             ProjectStateMachine.transition(
                 project,
                 ProjectState.APPROVED,
                 reason="Auto-approval bypass not permitted; setting approved state.",
             )
 
-        # Transition APPROVED -> OPTIMIZING
+        # Transition to OPTIMIZING
         ProjectStateMachine.transition(project, ProjectState.OPTIMIZING)
 
         ctx = project.context_representation

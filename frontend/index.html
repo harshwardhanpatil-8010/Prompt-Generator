@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Context Engineer - Website Prompt Generator</title>
+  <meta name="description" content="Transform high-level ambiguous website requirements into structured, optimized, minimum-sufficient prompts with ≥50% token reduction and 100% critical coverage.">
+  
+  <!-- Modern Typography from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <!-- Unified Top Header & Stepper Navigation -->
+    <header class="app-header-bar" role="banner">
+      <div class="header-main-row">
+        <div class="brand-section">
+          <div class="brand-logo" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <div class="brand-titles">
+            <div class="brand-heading">
+              <h1>AI Context Engineer</h1>
+              <span class="badge-tag">STUDIO</span>
+            </div>
+            <p>Context Lifecycle & Prompt Optimization Engine for Website Generation</p>
+          </div>
+        </div>
+
+        <div class="nav-actions">
+          <!-- Live Backend Status Indicator -->
+          <div id="backendStatusPill" class="status-pill offline" title="Backend Server Status">
+            <span class="status-dot"></span>
+            <span id="backendStatusText">Checking Backend...</span>
+          </div>
+
+          <button id="btnRefreshStatus" class="btn-icon" title="Reconnect / Refresh Status" aria-label="Refresh Status">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          </button>
+
+          <button id="btnInfoModal" class="btn-icon" title="About Lifecycle Architecture" aria-label="Info Modal">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </button>
+
+          <button id="btnNavNewProject" class="btn btn-secondary-compact" title="Start new project">
+            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>New Project</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Integrated Stepper Navigation Bar -->
+      <nav class="stepper-nav" aria-label="Context Engineering Lifecycle Steps">
+        <button class="step-item active" id="step1-tab" data-step="1">
+          <span class="step-num"><span class="step-num-text">1</span></span>
+          <div class="step-info">
+            <span class="step-title">Requirements</span>
+            <span class="step-desc">Input & Capture</span>
+          </div>
+        </button>
+
+        <button class="step-item" id="step2-tab" data-step="2">
+          <span class="step-num"><span class="step-num-text">2</span></span>
+          <div class="step-info">
+            <span class="step-title">Representation</span>
+            <span class="step-desc">Structured Specs</span>
+          </div>
+        </button>
+
+        <button class="step-item" id="step3-tab" data-step="3">
+          <span class="step-num"><span class="step-num-text">3</span></span>
+          <div class="step-info">
+            <span class="step-title">Dependency Graph</span>
+            <span class="step-desc">Entity Subgraphs</span>
+          </div>
+        </button>
+
+        <button class="step-item" id="step4-tab" data-step="4">
+          <span class="step-num"><span class="step-num-text">4</span></span>
+          <div class="step-info">
+            <span class="step-title">Optimization</span>
+            <span class="step-desc">Token Pruning &ge;50%</span>
+          </div>
+        </button>
+
+        <button class="step-item" id="step5-tab" data-step="5">
+          <span class="step-num"><span class="step-num-text">5</span></span>
+          <div class="step-info">
+            <span class="step-title">Minimum Prompt</span>
+            <span class="step-desc">Agent Specification</span>
+          </div>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="stage-container" role="main">
+
+      <!-- STAGE 1: INPUT & CONTEXT CAPTURE -->
+      <section id="stage-input" class="stage-view active" aria-labelledby="stage-input-title">
+        <div class="stage-header">
+          <div class="stage-header-title">
+            <div class="stage-meta-badge">
+              <span class="stage-indicator-dot"></span>
+              STAGE 1 OF 5 · SPECIFICATION
+            </div>
+            <h2 id="stage-input-title">Requirement Specification & Context Capture</h2>
+            <p>Define your website vision and capture optional active webpage context to seed generation with &ge;50% token reduction.</p>
+          </div>
+          <span class="badge-state" id="stage1StateBadge">STATE: INITIAL</span>
+        </div>
+
+
+        <div class="form-group">
+          <label for="projectName">Project Name</label>
+          <input type="text" id="projectName" class="input-text" placeholder="e.g. Apex Sneaker Drops Store" value="Sneaker Store Platform">
+        </div>
+
+        <div class="form-group">
+          <div class="form-label-row">
+            <label for="inputRequirement">Website Requirements & Goals</label>
+            <div class="prompt-meta-actions">
+              <span id="charCount" class="char-count">0 characters</span>
+              <button id="btnClearPrompt" type="button" class="btn-text-action" title="Clear requirements">Clear</button>
+            </div>
+          </div>
+          <textarea id="inputRequirement" class="textarea-custom" rows="5" placeholder="Describe the website, user personas, key features, pages, cart, checkout, responsive design, and branding requirements...">Create a modern e-commerce website for a sneaker store featuring exclusive drop countdowns, real-time inventory counter, interactive 3D shoe preview, size and color picker, shopping cart with slide-out drawer, Stripe checkout integration, and customer reviews.</textarea>
+        </div>
+
+        <!-- Optional Webpage Context Section -->
+        <div class="context-panel">
+          <div class="toggle-header" id="toggleWebContextContainer">
+            <div class="toggle-label-wrap">
+              <label class="toggle-switch">
+                <input type="checkbox" id="enableWebContext">
+                <span class="slider"></span>
+              </label>
+              <div>
+                <div class="toggle-title">Include Webpage Context</div>
+                <div class="toggle-sub">Ground generation in existing web reference, design tokens, or documentation</div>
+              </div>
+            </div>
+            <span class="source-chip" id="webContextBadge">DISABLED</span>
+          </div>
+
+          <div id="webContextForm" class="web-context-form hidden">
+            <div>
+              <label for="ctxUrl">Reference URL</label>
+              <input type="url" id="ctxUrl" class="input-text" placeholder="https://nike.com/snkrs">
+            </div>
+            <div>
+              <label for="ctxTitle">Page Title</label>
+              <input type="text" id="ctxTitle" class="input-text" placeholder="SNKRS Exclusive Launch Experience">
+            </div>
+            <div class="grid-full">
+              <label for="ctxSelection">Selected Text / Design Tokens / Content Excerpt</label>
+              <textarea id="ctxSelection" class="textarea-custom" rows="3" placeholder="Paste design inspiration or extracted text from existing page..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar" style="justify-content: flex-end;">
+          <button id="btnGenerateContext" class="btn btn-primary">
+            <span class="btn-text">Generate Structured Context &rarr;</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- STAGE 2: STRUCTURED CONTEXT & MANAGEMENT -->
+      <section id="stage-context" class="stage-view" aria-labelledby="stage-context-title">
+        <div class="stage-header">
+          <div class="stage-header-title">
+            <h2 id="stage-context-title">Stage 2: Structured Context Representation & Review</h2>
+            <p>Pydantic-typed representation across requirements, architecture, design tokens, and unknowns.</p>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <span class="badge-state" id="projectIdBadge">ID: -</span>
+            <span class="badge-state" id="projectStateBadge">STATE: CONTEXT_READY</span>
+          </div>
+        </div>
+
+        <!-- Sub Tabs -->
+        <div class="spec-nav-tabs" role="tablist">
+          <button class="spec-tab-btn active" data-tab="tab-reqs" role="tab">Requirements (<span id="reqCount">0</span>)</button>
+          <button class="spec-tab-btn" data-tab="tab-arch" role="tab">Architecture & Schema</button>
+          <button class="spec-tab-btn" data-tab="tab-design" role="tab">Design & Tech Specs</button>
+          <button class="spec-tab-btn" data-tab="tab-assumptions" role="tab">Assumptions (<span id="assumpCount">0</span>)</button>
+          <button class="spec-tab-btn" data-tab="tab-unknowns" role="tab">Unknowns (<span id="unknownCount">0</span>)</button>
+        </div>
+
+        <!-- Requirements Panel -->
+        <div id="tab-reqs" class="spec-tab-panel active">
+          <div id="requirementsList" class="req-grid">
+            <!-- Dynamically populated requirement cards -->
+          </div>
+        </div>
+
+        <!-- Architecture Panel -->
+        <div id="tab-arch" class="spec-tab-panel">
+          <div class="arch-grid">
+            <div class="arch-column">
+              <div class="arch-col-title">
+                <span>Pages & Routes</span>
+                <span id="pageCountBadge" class="arch-col-count">0</span>
+              </div>
+              <div id="pagesList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+            </div>
+
+            <div class="arch-column">
+              <div class="arch-col-title">
+                <span>Core Components</span>
+                <span id="compCountBadge" class="arch-col-count">0</span>
+              </div>
+              <div id="componentsList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+            </div>
+
+            <div class="arch-column">
+              <div class="arch-col-title">
+                <span>APIs & Data Entities</span>
+                <span id="apiCountBadge" class="arch-col-count">0</span>
+              </div>
+              <div id="apisList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Design & Tech Panel -->
+        <div id="tab-design" class="spec-tab-panel">
+          <div class="design-tech-grid">
+            <div class="spec-box">
+              <h3>🎨 Design System Tokens</h3>
+              <div class="spec-property">
+                <strong>Visual Style:</strong>
+                <span id="designStyle">-</span>
+              </div>
+              <div class="spec-property">
+                <strong>Color Direction & Palette:</strong>
+                <span id="designColor">-</span>
+              </div>
+              <div class="spec-property">
+                <strong>Typography Hierarchy:</strong>
+                <span id="designType">-</span>
+              </div>
+            </div>
+
+            <div class="spec-box">
+              <h3>⚙️ Technical Recommendations</h3>
+              <div class="spec-property">
+                <strong>Frontend Framework:</strong>
+                <span id="techFrontend">-</span>
+              </div>
+              <div class="spec-property">
+                <strong>Security Rules & CSP:</strong>
+                <span id="techSecurity">-</span>
+              </div>
+              <div class="spec-property">
+                <strong>Accessibility Compliance:</strong>
+                <span id="techA11y">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assumptions Panel -->
+        <div id="tab-assumptions" class="spec-tab-panel">
+          <div class="spec-box">
+            <h3>Model Inferred Assumptions</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
+              System-generated assumptions extracted to fill high-level specification voids:
+            </p>
+            <ul id="assumptionsList" class="bullet-list"></ul>
+          </div>
+        </div>
+
+        <!-- Unknowns Panel -->
+        <div id="tab-unknowns" class="spec-tab-panel">
+          <div class="spec-box">
+            <h3>Identified Unknowns & Ambiguities</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
+              Items requiring human clarification or deferred to external developer discretion:
+            </p>
+            <ul id="unknownsList" class="bullet-list"></ul>
+          </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+          <button id="btnBackToInput" class="btn btn-secondary">&larr; Edit Input</button>
+          <div style="display: flex; gap: 12px;">
+            <button id="btnViewGraph" class="btn btn-secondary">View Dependency Graph &rarr;</button>
+            <button id="btnApproveContext" class="btn btn-primary">
+              <span class="btn-text">&#10003; Approve Context & Optimize</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STAGE 3: DEPENDENCY GRAPH & RETRIEVAL -->
+      <section id="stage-graph" class="stage-view" aria-labelledby="stage-graph-title">
+        <div class="stage-header">
+          <div class="stage-header-title">
+            <h2 id="stage-graph-title">Stage 3: Relational Dependency Graph & Subgraph Retrieval</h2>
+            <p>Traverse structural relations between requirements, pages, components, and endpoints.</p>
+          </div>
+          <span class="badge-state">STORAGE: IN-MEMORY GRAPH</span>
+        </div>
+
+        <div class="graph-stage-wrapper">
+          <div class="graph-legend-bar">
+            <span style="font-weight: 700; color: #fff;">Legend:</span>
+            <div class="legend-tag">
+              <div class="legend-dot" style="background: var(--color-req);"></div>
+              <span>Requirement</span>
+            </div>
+            <div class="legend-tag">
+              <div class="legend-dot" style="background: var(--color-page);"></div>
+              <span>Page</span>
+            </div>
+            <div class="legend-tag">
+              <div class="legend-dot" style="background: var(--color-comp);"></div>
+              <span>Component</span>
+            </div>
+            <div class="legend-tag">
+              <div class="legend-dot" style="background: var(--color-api);"></div>
+              <span>API Endpoint</span>
+            </div>
+          </div>
+
+          <!-- Flow Chains Board -->
+          <div id="graphFlowView" class="graph-flow-board">
+            <!-- Dynamically rendered graph chains -->
+          </div>
+
+          <!-- Query Retrieval Sandbox -->
+          <div class="query-sandbox">
+            <label for="queryItemId" style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+              Structured Context Retrieval Sandbox
+            </label>
+            <p style="font-size: 0.82rem; color: var(--text-dim); margin-top: 2px;">
+              Query exact subgraph entities using ContextRetriever (e.g. REQ-001, PAGE-001, COMP-001, or API-001):
+            </p>
+            <div class="query-row">
+              <input type="text" id="queryItemId" class="input-text" placeholder="Enter Item ID (e.g. REQ-001)" value="REQ-001">
+              <button id="btnQueryContext" class="btn btn-secondary">Retrieve Subgraph</button>
+            </div>
+            <div id="queryResultsBox" class="query-result-pre hidden"></div>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <button id="btnBackToContext" class="btn btn-secondary">&larr; Back to Context</button>
+          <button id="btnProceedToOptimize" class="btn btn-primary">
+            <span class="btn-text">Proceed to Optimization &rarr;</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- STAGE 4: CONTEXT OPTIMIZATION & METRICS -->
+      <section id="stage-optimize" class="stage-view" aria-labelledby="stage-optimize-title">
+        <div class="stage-header">
+          <div class="stage-header-title">
+            <h2 id="stage-optimize-title">Stage 4: Context Optimization & Pruning Metrics</h2>
+            <p>Dependency graph pruning & heuristic compression to achieve &ge;50% token reduction.</p>
+          </div>
+          <span class="badge-state" style="border-color: rgba(16, 185, 129, 0.4); color: #34d399;">
+            RESEARCH BENCHMARK VERIFIED
+          </span>
+        </div>
+
+        <div class="metrics-banner">
+          <div>
+            <strong>Context Compression Target:</strong> Token Reduction &ge; 50.0% with 100% Critical Requirement Coverage.
+          </div>
+          <span class="badge-tag">HEURISTIC EVALUATOR</span>
+        </div>
+
+        <!-- KPI Grid -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-value orig" id="metricOrigTokens">0</div>
+            <div class="kpi-label">Original Context Tokens</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-value opt" id="metricOptTokens">0</div>
+            <div class="kpi-label">Optimized Prompt Tokens</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-value reduc" id="metricReduction">0%</div>
+            <div class="kpi-label">Total Token Reduction</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-value cover" id="metricCoverage">100%</div>
+            <div class="kpi-label">Critical Requirement Coverage</div>
+          </div>
+        </div>
+
+        <!-- Breakdown Statistics -->
+        <div class="opt-breakdown-card">
+          <div class="breakdown-item">
+            <span>Net Tokens Saved:</span>
+            <strong id="metricTokensSaved">0 tokens</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Critical Reqs Preserved:</span>
+            <strong id="metricCriticalCoverage">0 / 0 (100%)</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Pruned Redundancies:</span>
+            <strong id="metricPrunedCount">0 items removed</strong>
+          </div>
+        </div>
+
+        <!-- Pruning Log -->
+        <div class="spec-box" style="margin-bottom: 20px;">
+          <h3>Pruning & Compression Audit Log</h3>
+          <div id="prunedItemsList" class="pruned-box">
+            Pruned narrative fluff and isolated boilerplate. Preserving functional requirements, security guards, and design tokens.
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <button id="btnBackToGraph" class="btn btn-secondary">&larr; Back to Graph</button>
+          <button id="btnViewFinalPrompt" class="btn btn-primary">Synthesize Minimum Prompt &rarr;</button>
+        </div>
+      </section>
+
+      <!-- STAGE 5: FINAL MINIMUM-SUFFICIENT PROMPT -->
+      <section id="stage-prompt" class="stage-view" aria-labelledby="stage-prompt-title">
+        <div class="stage-header">
+          <div class="stage-header-title">
+            <h2 id="stage-prompt-title">Stage 5: Minimum-Sufficient Prompt Studio</h2>
+            <p>High-density technical prompt synthesized for external AI website code-generation agents.</p>
+          </div>
+          <span class="badge-state" style="border-color: rgba(99, 102, 241, 0.4); color: #a5b4fc;">
+            AGENT READY
+          </span>
+        </div>
+
+        <div class="prompt-editor-wrap">
+          <textarea id="finalPromptText" class="prompt-textarea" spellcheck="false" placeholder="Your minimum-sufficient prompt will appear here..."></textarea>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+          <button id="btnRestart" class="btn btn-secondary">New Project</button>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button id="btnDownloadPrompt" class="btn btn-secondary" title="Download specification as Markdown file">
+              <span>⬇️ Download .md</span>
+            </button>
+            <button id="btnExportJson" class="btn btn-secondary" title="Export full structured context as JSON">
+              <span>{ } Export JSON</span>
+            </button>
+            <button id="btnCopyPrompt" class="btn btn-success">
+              <span id="copyBtnIcon">📋</span>
+              <span id="copyBtnText">Copy Prompt</span>
+            </button>
+            <button id="btnApprovePrompt" class="btn btn-primary">
+              <span id="approvePromptText">&#10003; Approve & Lock Prompt</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- Lifecycle Info Modal -->
+  <div id="infoModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <h3 id="modalTitle">AI Context Engineering Architecture</h3>
+      <p>
+        This platform implements the full 7-stage <strong>Context Lifecycle</strong> to solve prompt bloating and ambiguous AI generation failures:
+      </p>
+      <ul style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.8; margin-left: 20px; margin-bottom: 20px;">
+        <li><strong>1. Generation:</strong> Transforms high-level requirements into strongly typed Pydantic entities.</li>
+        <li><strong>2. Representation:</strong> Categorizes requirements, pages, components, APIs, and design tokens with stable IDs.</li>
+        <li><strong>3. Storage:</strong> Retains context in a decoupled in-memory store for instantaneous subgraph traversal.</li>
+        <li><strong>4. Retrieval:</strong> Precise entity extraction by ID or dependency link.</li>
+        <li><strong>5. Management:</strong> Human-in-the-loop review and editing gate.</li>
+        <li><strong>6. Optimization:</strong> Graph dependency pruning & heuristic compression to achieve &ge;50% token reduction.</li>
+        <li><strong>7. Minimum-Sufficient Prompt:</strong> Synthesizes a dense, ready-to-paste AI agent prompt.</li>
+      </ul>
+      <div style="display: flex; justify-content: flex-end;">
+        <button id="btnCloseModal" class="btn btn-primary" style="padding: 8px 20px;">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

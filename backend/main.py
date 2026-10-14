@@ -14,6 +14,7 @@ from .models import (
     UpdateContextRequest,
 )
 from .pipeline import PipelineOrchestrator
+from .state_machine import InvalidStateTransitionError
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("prompt_generator")
@@ -38,13 +39,28 @@ context_store = InMemoryContextStore()
 orchestrator = PipelineOrchestrator(context_store)
 
 
+import os
+from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi import Request
+
+# Mount frontend web application if present
+frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
+if os.path.exists(frontend_dir):
+    app.mount("/app", StaticFiles(directory=frontend_dir, html=True), name="frontend")
+
+
 @app.get("/", tags=["System"])
-def root():
+def root(request: Request):
+    accept = request.headers.get("accept", "")
+    if "text/html" in accept and "application/json" not in accept:
+        return RedirectResponse(url="/app/")
     return {
         "name": "AI Context-Engineered Website Generation System",
         "version": "1.0.0",
         "status": "online",
         "provider": settings.LLM_PROVIDER,
+        "app_ui": "/app",
         "docs": "/docs",
     }
 
@@ -151,7 +167,7 @@ def update_context(project_id: str, req: UpdateContextRequest):
 def approve_context(project_id: str, req: Optional[ContextApprovalRequest] = None):
     try:
         return orchestrator.approve_context(project_id)
-    except ValueError as e:
+    except (ValueError, InvalidStateTransitionError) as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     except Exception as e:
         raise HTTPException(
@@ -185,7 +201,7 @@ def retrieve_context(project_id: str, req: RetrieveContextRequest):
 def optimize_context(project_id: str):
     try:
         return orchestrator.optimize_context(project_id)
-    except ValueError as e:
+    except (ValueError, InvalidStateTransitionError) as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     except Exception as e:
         logger.error(f"Context optimization error: {e}")

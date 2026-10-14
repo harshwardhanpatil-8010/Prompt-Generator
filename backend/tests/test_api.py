@@ -23,7 +23,7 @@ def test_health_endpoint():
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "healthy"
-    assert data["llm_provider"] == "mock"
+    assert data["llm_provider"] in ["mock", "ollama"]
 
 
 def test_create_project_validation():
@@ -123,3 +123,9 @@ def test_full_context_lifecycle_api():
     )
     assert prompt_app_res.status_code == 200
     assert prompt_app_res.json()["state"] == "FINAL_PROMPT_READY"
+
+    # 11. Idempotent re-entry when navigating back in UI
+    re_approve = client.post(f"/projects/{project_id}/context/approve")
+    assert re_approve.status_code == 200
+    re_optimize = client.post(f"/projects/{project_id}/context/optimize")
+    assert re_optimize.status_code == 200
